@@ -317,20 +317,40 @@
                   result.success
                 ) {
 
-                  if (
+                  const nama =
+                    result.nama || "-";
+
+                  const alias =
+                    result.alias || "-";
+
+                  const kategori =
+                    result.kategori || "-";
+
+                  const club =
+                    result.club || "-";
+
+                  const noReg =
+                    result.noReg || "-";
+
+                  const timestamp =
+                    result.timestamp || "-";
+
+                  const statusText =
                     result.status ===
                     "ALREADY_ATTENDED"
-                  ) {
+                      ? "PESERTA SUDAH ABSENSI"
+                      : "ABSENSI BERHASIL";
 
-                    attendanceResult.textContent =
-                      "Peserta sudah melakukan absensi.";
-
-                  } else {
-
-                    attendanceResult.textContent =
-                      "Absensi berhasil dicatat.";
-
-                  }
+                  attendanceResult.innerHTML =
+                    "<strong>" +
+                    statusText +
+                    "</strong><br><br>" +
+                    "No. Registrasi: " + noReg + "<br>" +
+                    "Nama: " + nama + "<br>" +
+                    "Alias: " + alias + "<br>" +
+                    "Kategori: " + kategori + "<br>" +
+                    "Club: " + club + "<br>" +
+                    "Waktu: " + timestamp;
 
                 } else {
 
