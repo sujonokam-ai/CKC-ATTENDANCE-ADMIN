@@ -93,6 +93,7 @@
     .scanner-section h2 {
       margin-top: 0;
       color: #1e3a8a;
+      text-align: center !important;
     }
 
     #reader {
@@ -121,6 +122,7 @@
     .participant-section h2 {
       margin-top: 0;
       color: #1e3a8a;
+      text-align: center !important;
     }
 
     #participantDisplay {
@@ -128,6 +130,7 @@
       padding: 15px;
       background: #f8fafc;
       border-radius: 10px;
+      text-align: center !important;
     }
 
     .attendance-card {
@@ -224,11 +227,27 @@
 
       .summary {
         grid-template-columns:
-          repeat(2, 1fr);
+          repeat(3, 1fr);
       }
 
     }
 
+    /* === ATTENDANCE TITLE CENTER === */
+
+    .scanner-section,
+    .participant-section {
+      text-align: center;
+    }
+
+    .scanner-section h2,
+    .participant-section h2 {
+      text-align: center !important;
+    }
+
+    #participantDisplay {
+      text-align: center !important;
+    }
+    
   </style>
 
 </head>
@@ -338,6 +357,76 @@
 
     }
 
+    function loadAttendanceSummary() {
+
+      const apiUrl =
+        "https://script.google.com/macros/s/AKfycbxGi47mvE8rpwkNaLjITw4YItQ-0UcMcZvGiTs3zPrZ6rW_mF61ZfRspEDpjT8xAPpk/exec";
+
+      const callbackName =
+        "attendanceSummaryCallback_" +
+        Date.now();
+
+      window[callbackName] =
+        function(result) {
+
+          console.log(
+            "HASIL ATTENDANCE SUMMARY:",
+            result
+          );
+
+          if (result) {
+
+            const totalRegisteredEl =
+              document.getElementById("totalRegistered");
+
+            const totalAttendedEl =
+              document.getElementById("totalAttended");
+
+            const totalRemainingEl =
+              document.getElementById("totalRemaining");
+
+            if (totalRegisteredEl) {
+              totalRegisteredEl.textContent =
+                result.totalRegistered ?? 0;
+            }
+
+            if (totalAttendedEl) {
+              totalAttendedEl.textContent =
+                result.totalAttended ?? 0;
+            }
+
+            if (totalRemainingEl) {
+              totalRemainingEl.textContent =
+                result.totalRemaining ?? 0;
+            }
+
+          }
+
+          const script =
+            document.getElementById(callbackName);
+
+          if (script) {
+            script.remove();
+          }
+
+          delete window[callbackName];
+
+        };
+
+      const script =
+        document.createElement("script");
+
+      script.id = callbackName;
+
+      script.src =
+        apiUrl +
+        "?api=quota" +
+        "&prefix=" +
+        encodeURIComponent(callbackName);
+
+      document.body.appendChild(script);
+
+    }
     async function startAttendanceScanner() {
 
       attendanceScanner =
@@ -368,7 +457,7 @@
               String(decodedText).trim();
 
             const apiUrl =
-              "https://script.google.com/macros/s/AKfycbwq7trLWjvUDd_ld0i_rNmZyt0fvlFbiP4wT-Pw0TC5RjLXCCkUwrGnc8hJCoPO6rMG/exec";
+              "https://script.google.com/macros/s/AKfycbxGi47mvE8rpwkNaLjITw4YItQ-0UcMcZvGiTs3zPrZ6rW_mF61ZfRspEDpjT8xAPpk/exec";
 
             const callbackName =
               "attendanceCallback_" +
@@ -379,29 +468,7 @@
 
                 if (result) {
 
-                  const totalRegisteredEl =
-                    document.getElementById("totalRegistered");
-
-                  const totalAttendedEl =
-                    document.getElementById("totalAttended");
-
-                  const totalRemainingEl =
-                    document.getElementById("totalRemaining");
-
-                  if (totalRegisteredEl) {
-                    totalRegisteredEl.textContent =
-                      result.totalRegistered ?? 0;
-                  }
-
-                  if (totalAttendedEl) {
-                    totalAttendedEl.textContent =
-                      result.totalAttended ?? 0;
-                  }
-
-                  if (totalRemainingEl) {
-                    totalRemainingEl.textContent =
-                      result.totalRemaining ?? 0;
-                  }
+                  loadAttendanceSummary();
 
                 }
 
@@ -590,6 +657,8 @@
 
     }
 
+    loadAttendanceSummary();
+
     startAttendanceScanner();
 
   </script>
@@ -597,4 +666,12 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+
 
