@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -443,8 +443,20 @@
                   const timestamp =
                     result.timestamp || "-";
 
-                  const foto =
+                  const fotoRaw =
                     result.foto || "";
+
+                  const fotoMatch =
+                    String(fotoRaw).match(
+                      /(?:id=|\/d\/)([-\w]{20,})/i
+                    );
+
+                  const foto =
+                    fotoMatch
+                      ? "https://drive.google.com/thumbnail?id=" +
+                        fotoMatch[1] +
+                        "&sz=w1000"
+                      : fotoRaw;
 
                   const statusText =
                     result.status ===
@@ -585,3 +597,4 @@
 </body>
 
 </html>
+
